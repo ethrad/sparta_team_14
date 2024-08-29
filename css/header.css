@@ -69,3 +69,85 @@ li:hover .slide-content {
         opacity: 1;
     }
 }
+
+.add_member {
+    display: none;
+    width: 500px;
+
+    margin: 30px auto 0px auto;
+    padding: 20px;
+    box-shadow: 0px 0px 3px 0px #48637396;
+    border-radius: 5px;
+}
+
+.team_name {
+    height: 250px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    font-family: "Black Han Sans", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 7em;
+}
+
+.intro {
+    max-width: 80%;
+    margin: 20px auto 0px auto;
+    background-color: #c7e4f596;
+    padding: 10px 0px 0px 5%;
+    overflow-x: hidden;
+    border-radius: 10px;
+}
+
+.outro {
+    max-width: 80%;
+    margin: 20px auto 100px auto;
+    background-color: #c7e4f596;
+    margin-top: 20px;
+    overflow-x: hidden;
+    border-radius: 10px;
+}
+
+.profilebtn {
+    width: 1000px;
+    margin: 50px auto 50px auto;
+}
+
+
+#container {
+
+    width: 1200px;
+    height: 400px;
+
+    margin: 0 auto;
+    /* container 영역을 브라우저에서 가운데 정렬하기 위해 auto설정 */
+    text-align: center;
+    /* inline-block화 된 div들을 텍스트 마냥 center로 정렬*/
+}
+
+#leftphoto {
+    height: 400px;
+    width: 300px;
+    border-radius: 10px;
+    border: 3px solid red;
+    margin: 0px 100px 0px 100px;
+
+    background-image: url('');
+    background-position: center;
+    background-size: cover;
+}
+
+#rightcontent {
+    height: 400px;
+    width: 500px;
+    border-radius: 10px;
+    border: 3px solid yellow;
+}
+
+.cardss {
+    float: left;
+}

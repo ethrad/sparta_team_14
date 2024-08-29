@@ -8,47 +8,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <style>
-        .profilebtn {
-            width: 1000px;
-            margin: 50px auto 50px auto;
-        }
 
-
-        #container {
-
-            width: 1200px;
-            height: 400px;
-
-            margin: 0 auto;
-            /* container 영역을 브라우저에서 가운데 정렬하기 위해 auto설정 */
-            text-align: center;
-            /* inline-block화 된 div들을 텍스트 마냥 center로 정렬*/
-        }
-
-        #leftphoto {
-            height: 400px;
-            width: 300px;
-            border-radius: 10px;
-            border: 3px solid red;
-            margin: 0px 100px 0px 100px;
-
-            background-image: url('');
-            background-position: center;
-            background-size: cover;
-        }
-
-        #rightcontent {
-            height: 400px;
-            width: 500px;
-            border-radius: 10px;
-            border: 3px solid yellow;
-        }
-
-        .cardss {
-            float: left;
-        }
-    </style>
+    <link rel="stylesheet" href="css/header.css">
 
     <script type="module">
         // Firebase SDK 라이브러리 가져오기
@@ -60,13 +21,13 @@
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         const firebaseConfig = {
-            apiKey: "AIzaSyBeVMK_16_YHNW2TV0StZapwE2QBxCyU8w",
-            authDomain: "sparta-52b36.firebaseapp.com",
-            projectId: "sparta-52b36",
-            storageBucket: "sparta-52b36.appspot.com",
-            messagingSenderId: "372697896610",
-            appId: "1:372697896610:web:576940d24eda69bcd0e9fb",
-            measurementId: "G-36C6JDYY54"
+            apiKey: "AIzaSyAji-mvaJmbXJdi6TDA1SM8-zevyeU0bSY",
+            authDomain: "sparta-6c58d.firebaseapp.com",
+            projectId: "sparta-6c58d",
+            storageBucket: "sparta-6c58d.appspot.com",
+            messagingSenderId: "266944411814",
+            appId: "1:266944411814:web:57fb2544833751446c5c67",
+            measurementId: "G-48VQHRGDCN"
         };
 
 
@@ -74,46 +35,56 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        $("#addmembers").click(async function () { //클릭을 동적으로 만들어주는 행위가 필요하다
-            let selfie = $('#selfie').val();         //스크립트의 타입이 모듈로 바뀌면 onclick같은게 작동안됨
-            let name = $('#name').val();
-            let mbti = $('#mbti').val();
-            let advant = $('#advant').val();
-            let coorper = $('#coorper').val();
+        $("#postingbtn").click(async function () {
+            let image = $("#image").val();
+            let name = $("#name").val();
+            let content = $("#content").val();
+            let work_url = $("#work_url").val();
+            let blog_url = $("#blog_url").val();
 
             let doc = {
-                'selfie': selfie,
+                'image': image,
                 'name': name,
-                'mbti': mbti,
-                'advant': advant,
-                'coorper': coorper
+                'content': content,
+                'work_url': work_url,
+                'blog_url': blog_url
             };
-            await addDoc(collection(db, "teams"), doc);
+            await addDoc(collection(db, "members"), doc);
             alert('저장 완료!');
             window.location.reload();
         })
 
-
-        //팀원 추가 버튼으로 추가했을 시
-        $("#addmembers").click(async function () {
-            let selfie = $('#selfie').val();
-            let name = $('#name').val();
-            let mbti = $('#mbti').val();
-            let advant = $('#advant').val();
-            let coorper = $('#coorper').val();
-
-            let doc = {
-                'selfie': selfie,
-                'name': name,
-                'mbti': mbti,
-                'advant': advant,
-                'coorper': coorper
-            };
-
-            await addDoc(collection(db, "teams"), doc);
-            alert('저장 완료!');
-            window.location.reload();
+        $("#savebtn").click(async function () {
+            $('#add_member').toggle();
         })
+
+        let docs = await getDocs(collection(db, "members"));
+        docs.forEach((doc) => {
+            let row = doc.data();
+            console.log(row);
+
+            let image = row['image'];
+            let name = row['name'];
+            let content = row['content'];
+            let work_url = row['work_url'];
+            let blog_url = row['blog_url'];
+
+            let temp = `<div class="col-lg-4">
+                <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
+                    xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
+                    preserveAspectRatio="xMidYMid slice" focusable="false">
+                    <title>Placeholder</title>
+                    <img src="${image}"
+                        class="card-img-top" alt="...">
+                    <rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect>
+                </svg>
+                <h2 class="fw-normal">${name}</h2>
+                <p>${content}</p>
+                <p><a id="openProfile2" class="btn btn-secondary">프로필 보기 »</a></p>
+            </div>`;
+
+            $("#card").append(temp);
+        });
 
         $("#openProfile1").click(async function () {
             $('#profileCard').toggle();
@@ -125,43 +96,100 @@
             $('#profileCard').toggle();
         })
 
-        let docs = await getDocs(collection(db, "teams"));
-        docs.forEach((doc) => {
-            let row = doc.data();
-            console.log(row);
-        }); 
     </script>
 </head>
 
 <body>
-    <div>
-        <div>
-            <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="selfie" placeholder="자기사진">
-                <label for="floatingInput">자기사진</label>
-            </div>
-            <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="name" placeholder="이름">
-                <label for="floatingInput">이름</label>
-            </div>
-            <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="mbti" placeholder="MBTI 및 성격">
-                <label for="floatingInput">MBTI 및 성격</label>
-            </div>
-            <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="advent" placeholder="장점">
-                <label for="floatingInput">장점</label>
-            </div>
-            <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="coorper" placeholder="협업스타일">
-                <label for="floatingInput">협업스타일</label>
+    <header class="p-3 text-bg-dark">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <!-- <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+                        <use xlink:href="#bootstrap"></use>
+                    </svg>
+                </a> -->
+
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li>
+                        <a href="index.html" class="nav-link px-2 text-secondary">
+                            <img alt="logo" fetchpriority="high" width="134" height="40" decoding="async" data-nimg="1" src="https://nbcamp.spartacodingclub.kr/_next/static/media/newLogo.a1d35235.svg" style="color: transparent;" id="__next_divd4_div93_navdf_divdf_divf9_a00_img00" style="color: transparent;" id="__next_divd4_div93_navdf_divdf_divf9_a00_img00">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://teamsparta.notion.site/14-376f823145b24111831f36b76b00ed57"
+                            class="nav-link px-2 text-white">팀 노션</a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link px-2 text-white">팀 원</a>
+                        <!-- 슬라이드 콘텐츠 추가 -->
+                        <div class="slide-content">
+                            <div>
+                                <a href="#" class="member">장민우</a>
+                            </div>
+                            <div>
+                                <a href="#" class="member">정다운</a>
+                            </div>
+                            <div>
+                                <a href="#" class="member">백현욱</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#" id="savebtn" class="nav-link px-2 text-white">팀원추가</a>
+                    </li>
+                </ul>
+
+                <!-- <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                    <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..."
+                        aria-label="Search">
+                </form> -->
+
+                <div class="text-end">
+                    <!-- <button type="button" class="btn btn-outline-light me-2">Login</button> -->
+                    <!-- <button type="button" class="btn btn-warning">Sign-up</button> -->
+                </div>
             </div>
         </div>
-
-        <div>
-            <button id="addmembers" type="button" class="btn btn-dark">기록하기</button>
+    </header>
+    <div class="add_member" id="add_member">
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="image" placeholder="팀원 사진">
+            <label for="floatingInput">팀원 사진</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="name" placeholder="팀원 이름">
+            <label for="floatingInput">팀원 이름</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="content" placeholder="팀원 소개">
+            <label for="floatingInput">팀원 소개</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="work_url" placeholder="작업 공간 주소">
+            <label for="floatingInput">작업 공간 주소</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="blog_url" placeholder="블로그 주소">
+            <label for="floatingInput">블로그 주소</label>
+        </div>
+        <div class="mybtn">
+            <button id="postingbtn" type="button" class="btn btn-primary">기록하기</button>
+            <button type="button" class="btn btn-outline-dark">닫기</button>
         </div>
     </div>
+
+    <div class="team_name">
+        삼대장
+    </div>
+
+    <div class="intro">
+        <div class="row">
+            <div class="col-4"><img src="https://i.postimg.cc/FsYyp4Rs/2024-08-29-141603.png" alt="" class="img-fluid">
+            </div>
+            <div class="col-8 d-flex align-items-center justify-content-center">세 명의 대장들이라 삼대장입니다.</div>
+        </div>
+    </div>
+
 
     <hr class="featurette-divider"> <!-- 구분 선 추가-->
 
@@ -178,7 +206,7 @@
                 </svg>
                 <h2 class="fw-normal">장민우</h2>
                 <p>빛의 속도로 차여본적 있나?</p>
-                <p><a id="openProfile1" class="btn btn-secondary" href="#">프로필 보기 »</a></p>
+                <p><a id="openProfile1" class="btn btn-secondary">프로필 보기 »</a></p>
             </div>
             <div class="col-lg-4">
                 <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
@@ -191,7 +219,7 @@
                 </svg>
                 <h2 class="fw-normal">정다운</h2>
                 <p>극단적인 정의는··· 때론 사람을 광기로 몰아세우지.</p>
-                <p><a id="openProfile2" class="btn btn-secondary" href="#">프로필 보기 »</a></p>
+                <p><a id="openProfile2" class="btn btn-secondary">프로필 보기 »</a></p>
             </div>
             <div class="col-lg-4">
                 <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
@@ -204,7 +232,7 @@
                 </svg>
                 <h2 class="fw-normal">백현욱</h2>
                 <p>그 녀석은 그냥... 쓰레기다.</p>
-                <p><a id="openProfile3" class="btn btn-secondary" href="#">프로필 보기 »</a></p>
+                <p><a id="openProfile3" class="btn btn-secondary" >프로필 보기 »</a></p>
             </div>
         </div><!-- /.row -->
 
