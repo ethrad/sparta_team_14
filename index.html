@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+
+    <link href="https://webfontworld.github.io/gyeonggi/GyeonggiTitle.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
@@ -38,15 +43,17 @@
         $("#postingbtn").click(async function () {
             let image = $("#image").val();
             let name = $("#name").val();
+            let summary = $("#summary").val();
             let content = $("#content").val();
-            let work_url = $("#work_url").val();
+            let github_url = $("#github_url").val();
             let blog_url = $("#blog_url").val();
 
             let doc = {
                 'image': image,
                 'name': name,
+                'summary': summary,
                 'content': content,
-                'work_url': work_url,
+                'github_url': github_url,
                 'blog_url': blog_url
             };
             await addDoc(collection(db, "members"), doc);
@@ -58,6 +65,9 @@
             $('#add_member').toggle();
         })
 
+        let member_data = [];
+        let member_index = 0;
+
         let docs = await getDocs(collection(db, "members"));
         docs.forEach((doc) => {
             let row = doc.data();
@@ -65,36 +75,37 @@
 
             let image = row['image'];
             let name = row['name'];
+            let summary = row['summary'];
             let content = row['content'];
-            let work_url = row['work_url'];
+            let github_url = row['github_url'];
             let blog_url = row['blog_url'];
 
+            member_data.push({ image, name, summary, content, github_url, blog_url });
+
             let temp = `<div class="col-lg-4">
-                <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
-                    xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder"
-                    preserveAspectRatio="xMidYMid slice" focusable="false">
-                    <title>Placeholder</title>
-                    <img src="${image}"
-                        class="card-img-top" alt="...">
-                    <rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect>
-                </svg>
+                <img src="${image}" class="card-img-top" alt="...">
                 <h2 class="fw-normal">${name}</h2>
-                <p>${content}</p>
-                <p><a id="openProfile2" class="btn btn-secondary">프로필 보기 »</a></p>
+                <p>${summary}</p>
+                <p><a id="openProfile" class="btn btn-secondary" data-index="${member_index}">프로필 보기 »</a></p>
             </div>`;
 
-            $("#card").append(temp);
+            $("#cards").append(temp);
+            member_index++;
+
+            $('#profileCard').hide();
         });
 
-        $("#openProfile1").click(async function () {
-            $('#profileCard').toggle();
-        })
-        $("#openProfile2").click(async function () {
-            $('#profileCard').toggle();
-        })
-        $("#openProfile3").click(async function () {
-            $('#profileCard').toggle();
-        })
+        $(document).on('click', '#openProfile', async function () {
+            let index = $(this).data("index");
+            let member = member_data[index];
+
+            $('#profileCard img').attr('src', member.image);
+            $('#profileCard .featurette-heading').html(member.name);
+            $('#profileCard .lead').html(`<h3>${member.content}</h3>`);
+            $('#profileCard #blog').attr('href', member.blog_url);
+
+            $('#profileCard').show();
+        });
 
     </script>
 </head>
@@ -112,7 +123,10 @@
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     <li>
                         <a href="index.html" class="nav-link px-2 text-secondary">
-                            <img alt="logo" fetchpriority="high" width="134" height="40" decoding="async" data-nimg="1" src="https://nbcamp.spartacodingclub.kr/_next/static/media/newLogo.a1d35235.svg" style="color: transparent;" id="__next_divd4_div93_navdf_divdf_divf9_a00_img00" style="color: transparent;" id="__next_divd4_div93_navdf_divdf_divf9_a00_img00">
+                            <img alt="logo" fetchpriority="high" width="134" height="40" decoding="async" data-nimg="1"
+                                src="https://nbcamp.spartacodingclub.kr/_next/static/media/newLogo.a1d35235.svg"
+                                style="color: transparent;" id="__next_divd4_div93_navdf_divdf_divf9_a00_img00"
+                                style="color: transparent;" id="__next_divd4_div93_navdf_divdf_divf9_a00_img00">
                         </a>
                     </li>
                     <li>
@@ -161,12 +175,16 @@
             <label for="floatingInput">팀원 이름</label>
         </div>
         <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="summary" placeholder="한 줄 소개">
+            <label for="floatingInput">한 줄 소개</label>
+        </div>
+        <div class="form-floating mb-3">
             <input type="email" class="form-control" id="content" placeholder="팀원 소개">
             <label for="floatingInput">팀원 소개</label>
         </div>
         <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="work_url" placeholder="작업 공간 주소">
-            <label for="floatingInput">작업 공간 주소</label>
+            <input type="email" class="form-control" id="github_url" placeholder="깃허브 주소">
+            <label for="floatingInput">깃허브 주소</label>
         </div>
         <div class="form-floating mb-3">
             <input type="email" class="form-control" id="blog_url" placeholder="블로그 주소">
@@ -184,9 +202,27 @@
 
     <div class="intro">
         <div class="row">
-            <div class="col-4"><img src="https://i.postimg.cc/FsYyp4Rs/2024-08-29-141603.png" alt="" class="img-fluid">
+            <div class="col-4 d-flex align-items-center justify-content-center">
+                <div class="team_image">
+                    <img src="https://i.postimg.cc/FsYyp4Rs/2024-08-29-141603.png" class="img-fluid">
+                </div>
+
             </div>
-            <div class="col-8 d-flex align-items-center justify-content-center">세 명의 대장들이라 삼대장입니다.</div>
+            <div class="col-8 d-flex align-items-center justify-content-center">
+                <div class="team_description">
+                    1. 매일 일정 소화하기
+                    <br><br>
+                    2. 부끄러워도 물어보기
+                    <br><br>
+                    3. 이번 프로젝트 포트폴리오로 사용하기
+                    <br><br>
+                    4. TIL 남은날까지 맨날 쓰기 📝
+                    <br><br>
+                    5. 1일 1TIL, 1알고리즘
+                </div>
+
+
+            </div>
         </div>
     </div>
 
@@ -195,8 +231,8 @@
 
     <div class="container marketing">
 
-        <div class="row">
-            <div class="col-lg-4">
+        <div id="cards" class="row">
+            <!-- <div class="col-lg-4">
                 <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="" role="img"
                     aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false">
                     <title>Placeholder</title>
@@ -206,7 +242,7 @@
                 </svg>
                 <h2 class="fw-normal">장민우</h2>
                 <p>빛의 속도로 차여본적 있나?</p>
-                <p><a id="openProfile1" class="btn btn-secondary">프로필 보기 »</a></p>
+                <p><a id="openProfile" class="btn btn-secondary" data-index="1">프로필 보기 »</a></p>
             </div>
             <div class="col-lg-4">
                 <svg class="bd-placeholder-img rounded-circle" width="140" height="140"
@@ -232,33 +268,34 @@
                 </svg>
                 <h2 class="fw-normal">백현욱</h2>
                 <p>그 녀석은 그냥... 쓰레기다.</p>
-                <p><a id="openProfile3" class="btn btn-secondary" >프로필 보기 »</a></p>
-            </div>
-        </div><!-- /.row -->
+                <p><a id="openProfile3" class="btn btn-secondary">프로필 보기 »</a></p> -->
+        </div>
+    </div><!-- /.row -->
 
-        <hr class="featurette-divider"> <!-- 구분 선 추가-->
+    <hr class="featurette-divider"> <!-- 구분 선 추가-->
 
-        <div id="profileCard" class="row featurette">
-            <div class="col-md-5 order-md-1">
-                <!-- 프로필 버튼 누르면 띄울 자기 사진-->
-                <img src="https://i.postimg.cc/C1h5sjYQ/11.jpg" class="card-img-top" alt="...">
-            </div>
-
-            <div class="col-md-7 order-md-2">
-                <h2 class="featurette-heading fw-normal lh-1">Oh yeah, it’s that good. <span
-                        class="text-body-secondary">See for yourself.</span></h2>
-
-                <p class="lead">
-                <h3>이름 :</h3>
-                <h3>나의 MBTI 및 성격 :</h3>
-                <h3>나의 장점 :</h3>
-                <h3>나의 협업스타일 :</h3>
-                </p>
-            </div>
-
+    <div id="profileCard" class="row featurette">
+        <div class="col-md-5 order-md-1">
+            <!-- 프로필 버튼 누르면 띄울 자기 사진-->
+            <img src="https://i.postimg.cc/FsYyp4Rs/2024-08-29-141603.png" class="card-img-top" alt="...">
         </div>
 
-        <hr class="featurette-divider">
+        <div class="col-md-7 order-md-2">
+            <h2 class="featurette-heading fw-normal lh-1">이름</h2>
+
+            <p class="lead">
+            <h3></h3>
+            </p>
+            <div class="button-container">
+                <button type="button" class="btn btn-info">
+                    <a id="blog" href="https://teamsparta.notion.site/14-376f823145b24111831f36b76b00ed57"
+                        style="text-decoration: none; color: inherit;">블로그 주소</a>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <hr class="featurette-divider">
     </div>
 
 
