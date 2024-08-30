@@ -110,7 +110,7 @@
             let member = member_data[index];
 
             $('#profileCard img').attr('src', member.image);
-            $('#profileCard .featurette-heading').html(member.name);
+            $('#profileCard .featurette-heading').html('<strong>' + member.name + '</strong>');
             $('#profileCard .lead').html(`<h3>${member.content}</h3>`);
             $('#profileCard #blog').attr('href', member.blog_url);
 
